@@ -1,0 +1,17 @@
+meta {
+  name: delete game
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/games
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "game": "mario"
+  }
+}

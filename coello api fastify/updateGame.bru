@@ -1,0 +1,21 @@
+meta {
+  name: updateGame
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:3000/games/dog
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "newName": "mario"
+  }
+}

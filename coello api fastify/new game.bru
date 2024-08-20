@@ -1,0 +1,21 @@
+meta {
+  name: new game
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/games
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "game": "donkeyKong"
+  }
+}
