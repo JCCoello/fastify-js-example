@@ -76,7 +76,7 @@ Add New Game - adds a new game based on a string
     - **Content-Type**: `application/json` (enabled)
   - **Body**: 
     - **Mode**: `json`
-    - **JSON**: `json {"game": string}`
+    - **JSON**: ` {"game": string}`
   - **Auth**: 
     - **Mode**: `none`
 
@@ -94,7 +94,7 @@ Delete Game  - deletes a game based on the sent name
   - **Body**: 
     - **Mode**: `json`
     - **JSON**: 
-      `json {"game": string}`
+      `{"game": string}`
   - **Auth**: 
     - **Mode**: `none`
 
@@ -111,8 +111,7 @@ Update Game - updates the name of a game
     - **Content-Type**: `application/json` (enabled)
   - **Body**: 
     - **Mode**: `json`
-    - **JSON**: `json {"game": string}`
-      ```
+    - **JSON**: `{"game": string}`
   - **Auth**: 
     - **Mode**: `none`
 
