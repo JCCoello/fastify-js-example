@@ -39,7 +39,8 @@ The schema is defined in JSON format and includes the following main components:
 - `environments`: An array of environments (currently empty).
 
 ## Schema Collection
-[Bruno Collection](schemas/coello%20api%20fastify%20(JS).json)
+[Bruno Collection](schemas/coello%20api%20fastify%20(JS).json) (Probably won't work)
+[Postman Collection](schemas/coello%20api%20fastify%20postman.json)
 
 ## Endpoints
 
