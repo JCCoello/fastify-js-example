@@ -38,9 +38,10 @@ The schema is defined in JSON format and includes the following main components:
 - `items`: An array of HTTP request items.
 - `environments`: An array of environments (currently empty).
 
+## Schema Collection
+[Bruno Collection](schemas/coello%20api%20fastify%20(JS).json)
+
 ## Endpoints
-
-
 
 ### `/games` (GET) 
 Get Games - Retrieves a list of games from the server.
