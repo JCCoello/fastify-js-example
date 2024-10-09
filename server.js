@@ -28,13 +28,11 @@ fastify.delete('/games', async (request, reply) => {
     reply.send(games)
 })
 
-
 fastify.get('/search', async (request, reply) => {
     const gamename = request.query.game;
     const gameInLibrary = games.some(game => game === gamename)
     reply.send({ "result": `game called ' ${gamename}' exists in library: ${gameInLibrary}` })
 })
-
 
 fastify.patch('/games/:gameId', async (request, reply) => {
     const game = request.params.gameId;
