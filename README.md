@@ -89,4 +89,4 @@ For a more detailed exploration of the API's capabilities, consider using Postma
 
 ## Conclusion
 
-The Coello API Fastify JS project demonstrates a practical implementation of a RESTful API using the Fastify framework and SQLite. It is designed to be a starting point for developers looking to build or extend their own APIs with similar functionality.
+The Coello API Fastify JS project demonstrates a practical implementation of a RESTful API using the Fastify framework and SQLite. It is designed to be a starting point for QA analysts looking to build or extend their own APIs with similar functionality.
