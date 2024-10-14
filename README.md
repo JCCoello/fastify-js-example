@@ -2,7 +2,7 @@
 
 ## Summary
 
-The Coello API Fastify JS project is an advanced and efficient REST API designed to facilitate basic CRUD (Create, Read, Update, Delete) operations within a game management system. Leveraging the Fastify framework for its high performance and SQLite for data persistence, this project allows for easy manipulation of game entries through standard HTTP methods such as GET, POST, PATCH, and DELETE. This documentation provides a comprehensive guide to installing, configuring, and utilizing the API to manage a collection of games.
+The Coello API Fastify JS project is a REST API designed to facilitate basic CRUD (Create, Read, Update, Delete) operations within a game management system. Leveraging the Fastify framework for its high performance and SQLite for data persistence, this project allows for easy manipulation of game entries through standard HTTP methods such as GET, POST, PATCH, and DELETE. This documentation provides a comprehensive guide to installing, configuring, and utilizing the API to manage a collection of games.
 
 ## Requirements
 
