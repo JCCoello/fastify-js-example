@@ -1,11 +1,11 @@
 meta {
-  name: updateGame
+  name: update Game
   type: http
   seq: 6
 }
 
 patch {
-  url: http://localhost:3000/games/3
+  url: http://localhost:3000/games/5
   body: json
   auth: none
 }
@@ -16,6 +16,7 @@ headers {
 
 body:json {
   {
-    "name": "Sonic the Headgehog 2"
+    "category": "block",
+    "rating": "shit"
   }
 }

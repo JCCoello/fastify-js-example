@@ -28,6 +28,21 @@ function initializeDb() {
                 console.error('Error creating table', err);
                 return;
             }
+
+            const addColumns = [
+                `ALTER TABLE game ADD COLUMN category TEXT`,
+                `ALTER TABLE game ADD COLUMN year INTEGER`,
+                `ALTER TABLE game ADD COLUMN rating TEXT`
+            ];
+
+            addColumns.forEach((query) => {
+                db.run(query, (err) => {
+                    if (err) {
+                        console.log('Attempted to add an existing column or other error:', err.message);
+                    }
+                });
+            });
+
             // Check if the table is empty
             db.get("SELECT COUNT(id) as count FROM game", (err, row) => {
                 if (err) {
@@ -82,7 +97,26 @@ fastify.listen({ port: 3000 }, (err, address) => {
 })
 
 fastify.get('/games', (request, reply) => {
-    db.all("SELECT * FROM game", [], (err, rows) => {
+    const { category, year, rating } = request.query;
+
+    let sql = "SELECT * FROM game WHERE 1=1";
+    let params = [];
+
+    // Dynamically add filters to the SQL query if they are present
+    if (category) {
+        sql += " AND category = ?";
+        params.push(category);
+    }
+    if (year) {
+        sql += " AND year = ?";
+        params.push(year);
+    }
+    if (rating) {
+        sql += " AND rating = ?";
+        params.push(rating);
+    }
+
+    db.all(sql, params, (err, rows) => {
         if (err) {
             reply.send(err);
             return;
@@ -90,6 +124,34 @@ fastify.get('/games', (request, reply) => {
         reply.send(rows);
     });
 })
+
+
+fastify.get('/games/:id', async (request, reply) => {
+    const { id } = request.params;
+
+    try {
+        const row = await new Promise((resolve, reject) => {
+            db.get("SELECT * FROM game WHERE id = ?", [id], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+
+        if (row) {
+            reply.send(row);
+        } else {
+            return reply.status(404).send({ error: `Game with id ${id} doesn't exist` });
+        }
+    } catch (err) {
+        request.log.error(err);
+        // Use 'return' here to ensure the function exits after sending the error response
+        return reply.status(500).send({ error: 'An error occurred during the search.' });
+    }
+});
+
 
 fastify.post('/games', async (request, reply) => {
     const { name } = request.body;
@@ -158,10 +220,46 @@ fastify.get('/search', async (request, reply) => {
 
 fastify.patch('/games/:id', (request, reply) => {
     const { id } = request.params;
-    const { name } = request.body;
+    const { name, category, year, rating } = request.body;
+
+    // Initialize the SQL query without assuming any fields are present
+    let sql = "UPDATE game SET";
+    let params = [];
+    let fieldsToUpdate = []; // Keep track of fields to update
+
+    // Dynamically add fields to the SQL query if they are present in the request body
+    if (name !== undefined) {
+        fieldsToUpdate.push("name = ?");
+        params.push(name);
+    }
+    if (category !== undefined) {
+        fieldsToUpdate.push("category = ?");
+        params.push(category);
+    }
+    if (year !== undefined) {
+        fieldsToUpdate.push("year = ?");
+        params.push(year);
+    }
+    if (rating !== undefined) {
+        fieldsToUpdate.push("rating = ?");
+        params.push(rating);
+    }
+
+    // Ensure there are fields to update, otherwise return an error
+    if (fieldsToUpdate.length === 0) {
+        reply.status(400).send({ error: 'No fields provided for update.' });
+        return;
+    }
+
+    // Join the fields to update into the SQL query
+    sql += " " + fieldsToUpdate.join(", ");
+
+    // Add the WHERE clause to target the correct game by ID
+    sql += " WHERE id = ?";
+    params.push(id);
 
     // Use a parameterized SQL query to prevent SQL injection and ensure safe updates
-    db.run("UPDATE game SET name = ? WHERE id = ?", [name, id], function (err) {
+    db.run(sql, params, function (err) {
         if (err) {
             request.log.error(err);
             reply.status(500).send({ error: 'An error occurred while updating the game.' });
@@ -171,8 +269,14 @@ fastify.patch('/games/:id', (request, reply) => {
             // No rows were updated, which means the game with the specified ID was not found
             reply.status(404).send({ message: 'Game not found.' });
         } else {
-            // Successfully updated the game
-            reply.send({ message: 'Game successfully updated.', id, name });
+            // Successfully updated the game. Construct the response to include what was updated.
+            let updatedFields = {};
+            if (name !== undefined) updatedFields.name = name;
+            if (category !== undefined) updatedFields.category = category;
+            if (year !== undefined) updatedFields.year = year;
+            if (rating !== undefined) updatedFields.rating = rating;
+
+            reply.send({ message: 'Game successfully updated.', updatedFields });
         }
     });
 });
