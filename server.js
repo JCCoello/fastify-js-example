@@ -154,10 +154,37 @@ fastify.get('/games/:id', async (request, reply) => {
 
 
 fastify.post('/games', async (request, reply) => {
-    const { name } = request.body;
+    // Destructure all possible fields from request.body
+    const { name, category, year, rating } = request.body;
 
+    // Initialize SQL query parts
+    let fields = "name";
+    let placeholders = "?";
+    let values = [name];
+
+    // Dynamically add fields if they are provided
+    if (category !== undefined) {
+        fields += ", category";
+        placeholders += ", ?";
+        values.push(category);
+    }
+    if (year !== undefined) {
+        fields += ", year";
+        placeholders += ", ?";
+        values.push(year);
+    }
+    if (rating !== undefined) {
+        fields += ", rating";
+        placeholders += ", ?";
+        values.push(rating);
+    }
+
+    // Construct the final SQL query string
+    const sql = `INSERT INTO game (${fields}) VALUES (${placeholders})`;
+
+    // Wrap the db.run call in a promise to use async/await
     const insertGame = new Promise((resolve, reject) => {
-        db.run("INSERT INTO game (name) VALUES (?)", [name], function (err) {
+        db.run(sql, values, function (err) {
             if (err) {
                 reject(err);
             } else {
@@ -168,6 +195,8 @@ fastify.post('/games', async (request, reply) => {
 
     try {
         const lastID = await insertGame;
+        // Assuming you want to return the inserted game's ID to the client
+        reply.send({ message: "Game successfully inserted.", id: lastID });
     } catch (err) {
         console.error(err);
         reply.status(500).send({ error: "An error occurred while inserting the game." });
